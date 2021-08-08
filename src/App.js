@@ -1,8 +1,14 @@
 import React from 'react';
+import Login from './Login'
+import Profile from './component/Profile'
+import LogoutButton from './component/LogoutButton'
+import Bookshelf from './component/Bookshelf'
+// import BrowserRouter from './component/BrowserRouter'
 import Header from './Header';
 import IsLoadingAndError from './IsLoadingAndError';
 import Footer from './Footer';
-import {
+import 
+{
   BrowserRouter as Router,
   Switch,
   Route
@@ -15,16 +21,22 @@ class App extends React.Component {
     return(
       <>
         <Router>
-          <IsLoadingAndError>
             <Header />
             <Switch>
-              <Route exact path="/">
+              <Route exact path="/" >
+                <Login/>
+                <Bookshelf />
                 {/* TODO: if the user is logged in, render the `BestBooks` component, if they are not, render the `Login` component */}
               </Route>
-              {/* TODO: add a route with a path of '/profile' that renders a `Profile` component */}
+              <Route exact path="/profile"> 
+             
+             {/* TODO: add a route with a path of '/profile' that renders a `Profile` component */}
+
+              </Route >
+
             </Switch>
+
             <Footer />
-          </IsLoadingAndError>
         </Router>
       </>
     );
