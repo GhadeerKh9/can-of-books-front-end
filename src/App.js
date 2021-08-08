@@ -1,42 +1,33 @@
-import React from 'react';
-import Login from './Login'
-import Profile from './component/Profile'
-import LogoutButton from './component/LogoutButton'
-import Bookshelf from './component/Bookshelf'
+import React from "react";
+import Login from "./Login";
+import Profile from "./component/Profile";
+import LogoutButton from "./component/LogoutButton";
+import BestBooks from "./BestBooks";
 // import BrowserRouter from './component/BrowserRouter'
-import Header from './Header';
-import IsLoadingAndError from './IsLoadingAndError';
-import Footer from './Footer';
-import 
-{
-  BrowserRouter as Router,
-  Switch,
-  Route
-} from "react-router-dom";
+import Header from "./Header";
+import IsLoadingAndError from "./IsLoadingAndError";
+import Footer from "./Footer";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 class App extends React.Component {
-
   render() {
-    console.log('app', this.props);
-    return(
+    console.log("app", this.props);
+    return (
       <>
         <Router>
-            <Header />
-            <Switch>
-              <Route exact path="/" >
-                <Login/>
-                <Bookshelf />
-                {/* TODO: if the user is logged in, render the `BestBooks` component, if they are not, render the `Login` component */}
-              </Route>
-              <Route exact path="/profile"> 
-             
-             {/* TODO: add a route with a path of '/profile' that renders a `Profile` component */}
+          <Header />
+          <Switch>
+            <Route exact path="/">
+              <Login />
+              <BestBooks />
+              {/* TODO: if the user is logged in, render the `BestBooks` component, if they are not, render the `Login` component */}
+            </Route>
+            <Route exact path="/profile"> <Profile/>
+              {/* TODO: add a route with a path of '/profile' that renders a `Profile` component */}
+            </Route>
+          </Switch>
 
-              </Route >
-
-            </Switch>
-
-            <Footer />
+          <Footer />
         </Router>
       </>
     );

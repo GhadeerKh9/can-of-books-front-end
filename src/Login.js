@@ -6,6 +6,7 @@ import LoginButton from './component/LoginButton';
 import { withAuth0 } from '@auth0/auth0-react';
 
 
+
 class Login extends React.Component {
   render() {
     const { isAuthenticated } = this.props.auth0;
