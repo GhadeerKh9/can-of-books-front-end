@@ -13,14 +13,17 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 class App extends React.Component {
   render() {
     console.log("app", this.props);
+    const {isAuthenticated} = this.props.auth0;
     return (
       <>
         <Router>
           <Header />
           <Switch>
             <Route exact path="/">
-              <Login />
-              {this.props.auth0.isAuthenticated && <BestBooks />}
+              {/* <Login /> */}
+              {/* {this.props.auth0.isAuthenticated && <BestBooks />} */}
+              { isAuthenticated ? <BestBooks/> : <Login/> }
+
 
               {/* TODO: if the user is logged in, render the `BestBooks` component, if they are not, render the `Login` component */}
             </Route>
