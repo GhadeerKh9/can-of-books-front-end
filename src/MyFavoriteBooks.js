@@ -7,85 +7,63 @@ import { withAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
 import Carousel from "react-bootstrap/Carousel";
 import Button from "react-bootstrap/Button";
-import Form from "./component/Form";
+import ModalForm from "./component/ModalForm";
+import UpdateDataForm from "./component/UpdateDataForm";
 
 class MyFavoriteBooks extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      books: [],
+      booksData: [],
+
       server: process.env.REACT_APP_URL,
-      // userEmail= '',
-      showBooks: false,
+      titleForm: "",
+      descriptionForm: "",
+      statusForm: "",
+      idx: -1,
+
       show: false,
-      bookName: "",
-      description: "",
+      flag: false,
     };
   }
 
-  // getBooks = () => {
-  //   const { user } = this.props.auth0;
+  componentDidMount = () => {
+    const { user } = this.props.auth0;
 
-  //   const url = `${process.env.REACT_APP_URL}/books`;
-  //   const paramObj = {
-  //     params: {
-  //       email: user.email,
-  //     },
-  //   };
-  //   axios
-  //     .get(url, paramObj)
-  //     .then((outputs) => {
-  //       this.setState({
-  //         books: outputs.data,
+    axios
+      .get(`${this.state.server}/books?email=${user.email}`)
+      .then((results) => {
+        this.setState({
+          booksData: results.data,
+          showBooks: true,
+        });
+      })
 
-  //         showBooks: true,
-  //       });
-  //       console.log(outputs);
-  //     })
-
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // };
-
-  componentDidMount = async () => {
-    const books = await axios.get(`${this.state.server}/books`, {
-      params: { email: this.props.auth0.user.email },
-    });
-    console.log("books", books.data);
-    this.setState({
-      books: books.data,
-      showBooks: true,
-    });
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
-  updateBookName = (event) => {
-    this.setState({
-      bookName: event.target.value,
-    });
-  };
-
-  updateDescription = (event) => {
-    this.setState({
-      description: event.target.value,
-    });
-  };
-
-  addBook = async (event) => {
+  handleSubmitting = (event) => {
     event.preventDefault();
-    const formObject = {
-      bookName: this.state.bookName,
-      description: this.state.description,
-      ownerEmail: this.props.auth0.user.email,
-    };
-    const newBooks = await axios.post(
-      `${this.state.server}/addBook`,
-      formObject
-    );
 
-    this.setState({
-      books: newBooks.data,
-    });
+    const newObject = {
+      email: this.props.auth0.user.email,
+      title: event.target.title.value,
+      description: event.target.description.value,
+      status: event.target.status.value,
+    };
+
+    axios
+      .post(`${this.state.server}/addBook`, newObject)
+      .then((results) => {
+        this.setState({
+          booksData: results.data,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   showModal = () => {
@@ -94,9 +72,63 @@ class MyFavoriteBooks extends React.Component {
     });
   };
 
-  handleClose1 = () => {
+  handleClose = () => {
     this.setState({
       show: false,
+    });
+  };
+
+  handleDeleteBook = (index) => {
+    const { user } = this.props.auth0;
+    const data = {
+      email: user.email,
+    };
+    axios
+      .delete(`${this.state.server}/books/${index}`, { params: data })
+      .then((result) => {
+        this.setState({
+          booksData: result.data,
+        });
+      })
+      .catch((error) => alert(error));
+  };
+
+  updateModal = (index) => {
+    this.setState({
+      flag: true,
+      titleForm: this.state.booksData[index].title,
+      descriptionForm: this.state.booksData[index].description,
+      statusForm: this.state.booksData[index].status,
+      idx: index,
+    });
+  };
+
+  updateValues = (event) => {
+    // to send a req to the server
+    event.preventDefault();
+    const { user } = this.props.auth0;
+    const updatedData = {
+      email: user.email,
+      title: event.target.title.value,
+      description: event.target.description.value,
+      status: event.target.status.value,
+    };
+    axios
+      .put(`${this.state.server}/updateBook/${this.state.idx}`, updatedData)
+      .then((result) => {
+        // console.log(result.data);
+        this.setState({
+          books: result.data,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  handleClose2 = () => {
+    this.setState({
+      flag: false,
     });
   };
 
@@ -112,21 +144,19 @@ class MyFavoriteBooks extends React.Component {
           >
             Add a book!
           </Button>
-          {this.state.show && (
-            <Form
-              updateBookNameProps={this.updateBookName}
-              updateBookDescriptionProps={this.updateDescription}
-              addBookProps={this.addBook}
-              handleClose1={this.handleClose1}
-              show={this.state.show}
-            />
-          )}
+
+          <ModalForm
+            show={this.state.show}
+            handleClose={this.handleClose}
+            handleSubmitting={this.handleSubmitting}
+          />
         </div>
+
         <Carousel>
-          {this.state.books &&
-            this.state.books.map((item) => {
+          {this.state.booksData &&
+            this.state.booksData.map((item, idx) => {
               return (
-                <Carousel.Item interval={1000}>
+                <Carousel.Item interval={10000}>
                   <img
                     className="d-block w-100"
                     src="https://via.placeholder.com/1000x300.png/363533?text=Books+Poster+Place+Holder"
@@ -135,11 +165,35 @@ class MyFavoriteBooks extends React.Component {
                   <Carousel.Caption>
                     <h3>{item.title}</h3>
                     <p>{item.description}</p>
+                    <p>{item.status}</p>
+                    <div key={idx}>
+                      <button onClick={() => this.handleDeleteBook(idx)}>
+                        Delete
+                      </button>
+                      <button onClick={() => this.updateModal(idx)}>
+                        Update Book Info
+                      </button>
+                    </div>
                   </Carousel.Caption>
                 </Carousel.Item>
               );
             })}
         </Carousel>
+        <div>
+          <UpdateDataForm
+            flag={this.state.flag}
+            titleForm={this.state.titleForm}
+            descriptionForm={this.state.descriptionForm}
+            statusForm={this.state.statusForm}
+            updateValues={this.updateValues}
+            handleClose2={this.handleClose2}
+            booksData={this.state.booksData}
+            updateModal={this.updateModal}
+
+            // handleClose={this.handleClose}
+            // handleSubmitting={this.handleSubmitting}
+          />
+        </div>
       </>
     );
   }
