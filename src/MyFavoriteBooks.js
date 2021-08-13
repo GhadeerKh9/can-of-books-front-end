@@ -44,14 +44,14 @@ class MyFavoriteBooks extends React.Component {
       });
   };
 
-  handleSubmitting = (event) => {
-    event.preventDefault();
+  handleSubmitting = (e) => {
+    e.preventDefault();
 
     const newObject = {
       email: this.props.auth0.user.email,
-      title: event.target.title.value,
-      description: event.target.description.value,
-      status: event.target.status.value,
+      title: e.target.title.value,
+      description: e.target.description.value,
+      status: e.target.status.value,
     };
 
     axios
@@ -95,7 +95,7 @@ class MyFavoriteBooks extends React.Component {
 
   updateModal = (index) => {
     this.setState({
-      flag: true,
+      show: true,
       titleForm: this.state.booksData[index].title,
       descriptionForm: this.state.booksData[index].description,
       statusForm: this.state.booksData[index].status,
@@ -124,12 +124,6 @@ class MyFavoriteBooks extends React.Component {
       .catch((err) => {
         console.log(err);
       });
-  };
-
-  handleClose2 = () => {
-    this.setState({
-      flag: false,
-    });
   };
 
   render() {
@@ -181,7 +175,7 @@ class MyFavoriteBooks extends React.Component {
         </Carousel>
         <div>
           <UpdateDataForm
-            flag={this.state.flag}
+            show={this.state.show}
             titleForm={this.state.titleForm}
             descriptionForm={this.state.descriptionForm}
             statusForm={this.state.statusForm}

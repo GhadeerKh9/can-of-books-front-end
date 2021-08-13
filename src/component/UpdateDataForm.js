@@ -9,7 +9,7 @@ class UpdateDataForm extends React.Component {
   render() {
     return (
       <>
-        <Modal flag={this.props.flag} onHide={this.props.handleClose2}>
+        <Modal show={this.props.show} onHide={this.props.handleClose}>
           <Modal.Header closeButton>
             <Modal.Title> Feel free to add a new book! </Modal.Title>
           </Modal.Header>
@@ -43,14 +43,14 @@ class UpdateDataForm extends React.Component {
                 />
               </Form.Group>
 
-              <Button variant="primary" type="submit">
-                Add a book!
-              </Button>
+              <button onClick={() => this.props.updateValues()}>
+                Add book
+              </button>
             </Form>
           </Modal.Body>
 
           <Modal.Footer>
-            <Button variant="secondary" onClick={this.props.handleClose2}>
+            <Button variant="secondary" onClick={this.props.handleClose}>
               Close
             </Button>
           </Modal.Footer>
