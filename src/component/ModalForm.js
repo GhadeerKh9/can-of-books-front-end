@@ -13,11 +13,11 @@ class ModalForm extends React.Component {
             <Modal.Title> Feel free to add a new book! </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Form onSubmit={(e) => this.props.handleSubmitting(e)}>
+            <Form onSubmit={(event) => this.props.handleSubmittingForm(event)}>
               <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Book's name</Form.Label>
                 <Form.Control
-                  name="title"
+                  name="titleF"
                   type="text"
                   placeholder="Add a book name"
                 />
@@ -25,7 +25,7 @@ class ModalForm extends React.Component {
               <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Description</Form.Label>
                 <Form.Control
-                  name="description"
+                  name="descriptionF"
                   type="text"
                   placeholder="Add a book description"
                 />
@@ -33,7 +33,7 @@ class ModalForm extends React.Component {
               <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Book Status</Form.Label>
                 <Form.Control
-                  name="status"
+                  name="statusF"
                   type="text"
                   placeholder="Add a book status"
                 />

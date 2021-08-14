@@ -8,7 +8,7 @@ import axios from "axios";
 import Carousel from "react-bootstrap/Carousel";
 import Button from "react-bootstrap/Button";
 import ModalForm from "./component/ModalForm";
-import UpdateDataForm from "./component/UpdateDataForm";
+// import UpdateDataForm from "./component/UpdateDataForm";
 
 class MyFavoriteBooks extends React.Component {
   constructor(props) {
@@ -17,13 +17,12 @@ class MyFavoriteBooks extends React.Component {
       booksData: [],
 
       server: process.env.REACT_APP_URL,
-      titleForm: "",
-      descriptionForm: "",
-      statusForm: "",
+      title: "",
+      description: "",
+      status: "",
       idx: -1,
 
       show: false,
-      flag: false,
     };
   }
 
@@ -49,9 +48,9 @@ class MyFavoriteBooks extends React.Component {
 
     const newObject = {
       email: this.props.auth0.user.email,
-      title: event.target.title.value,
-      description: event.target.description.value,
-      status: event.target.status.value,
+      title: event.target.titleF.value,
+      description: event.target.descriptionF.value,
+      status: event.target.statusF.value,
     };
 
     axios
@@ -93,62 +92,46 @@ class MyFavoriteBooks extends React.Component {
       .catch((error) => alert(error));
   };
 
-  updateModal = (index) => {
-    this.setState({
-      flag: true,
-      titleForm: this.state.booksData[index].title,
-      descriptionForm: this.state.booksData[index].description,
-      statusForm: this.state.booksData[index].status,
-      idx: index,
-    });
-  };
+  // updateModal = (index) => {
+  //   this.setState({
+  //     show: true,
+  //     title: this.state.booksData[index].title,
+  //     description: this.state.booksData[index].description,
+  //     status: this.state.booksData[index].status,
+  //     idx: index,
+  //   });
+  // };
 
-  updateValues = (event) => {
-    // to send a req to the server
-    event.preventDefault();
-    const { user } = this.props.auth0;
-    const updatedData = {
-      email: user.email,
-      title: event.target.title.value,
-      description: event.target.description.value,
-      status: event.target.status.value,
-    };
-    axios
-      .put(`${this.state.server}/updateBook/${this.state.idx}`, updatedData)
-      .then((result) => {
-        // console.log(result.data);
-        this.setState({
-          books: result.data,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  handleClose2 = () => {
-    this.setState({
-      flag: false,
-    });
-  };
+  // updateValues = (e) => {
+  //   e.preventDefault();
+  //   const { user } = this.props.auth0;
+  //   const updatedData = {
+  //     email: user.email,
+  //     title: e.target.title.value,
+  //     description: e.target.description.value,
+  //     status: e.target.status.value,
+  //   };
+  //   axios
+  //     .put(`${this.state.server}/updateBook/${this.state.idx}`, updatedData)
+  //     .then((result) => {
+  //       // console.log(result.data);
+  //       this.setState({
+  //         books: result.data,
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
 
   render() {
     return (
       <>
         <div>
-          <Button
-            variant="outline-dark"
-            onClick={this.showModal}
-            size="lg"
-            block
-          >
-            Add a book!
-          </Button>
-
           <ModalForm
             show={this.state.show}
             handleClose={this.handleClose}
-            handleSubmitting={this.handleSubmitting}
+            handleSubmittingForm={this.handleSubmitting}
           />
         </div>
 
@@ -166,6 +149,14 @@ class MyFavoriteBooks extends React.Component {
                     <h3>{item.title}</h3>
                     <p>{item.description}</p>
                     <p>{item.status}</p>
+                    <Button
+                      variant="outline-dark"
+                      onClick={this.showModal}
+                      size="lg"
+                      block
+                    >
+                      Add a book!
+                    </Button>
                     <div key={idx}>
                       <button onClick={() => this.handleDeleteBook(idx)}>
                         Delete
@@ -180,19 +171,15 @@ class MyFavoriteBooks extends React.Component {
             })}
         </Carousel>
         <div>
-          <UpdateDataForm
-            flag={this.state.flag}
-            titleForm={this.state.titleForm}
-            descriptionForm={this.state.descriptionForm}
-            statusForm={this.state.statusForm}
+          {/* <UpdateDataForm
+            show={this.state.show}
+            title={this.state.title}
+            description={this.state.description}
+            status={this.state.status}
             updateValues={this.updateValues}
-            handleClose2={this.handleClose2}
+            handleClose={this.handleClose}
             booksData={this.state.booksData}
-            updateModal={this.updateModal}
-
-            // handleClose={this.handleClose}
-            // handleSubmitting={this.handleSubmitting}
-          />
+          /> */}
         </div>
       </>
     );
